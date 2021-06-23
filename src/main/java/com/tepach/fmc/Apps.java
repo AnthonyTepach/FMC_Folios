@@ -24,8 +24,10 @@ public class Apps extends javax.swing.JFrame {
     /**
      * Creates new form Apps
      */
-    ArrayList<String> hola = new ArrayList();
-    Stack<String> pila = new Stack<String>();
+    private ArrayList<String> hola = new ArrayList();
+    private Stack<String> pila = new Stack<String>();
+    private Stack<String> pila_dos = new Stack<String>();
+    private int contador = 0;
 
     public Apps() {
         initComponents();
@@ -127,17 +129,19 @@ public class Apps extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-           
-    
-        if (!jtff_ini.getText().isEmpty() && !jtf_fin.getText().isEmpty()) {
-            int folini = Integer.parseInt(jtff_ini.getText());
-            int folfin = Integer.parseInt(jtf_fin.getText());
+        if (!this.jtff_ini.getText().isEmpty() && !this.jtf_fin.getText().isEmpty()) {
+            int folini = Integer.parseInt(this.jtff_ini.getText());
+            int folfin = Integer.parseInt(this.jtf_fin.getText());
             if (folini > folfin) {
-                JOptionPane.showMessageDialog(rootPane, "El folio inicial no debe ser mayor al folio final.", "Error", JOptionPane.ERROR_MESSAGE);
-            } else {
+                JOptionPane.showMessageDialog(this.rootPane, "El folio inicial no debe ser mayor al folio final.", "Error", 0);
+            } else if (folfin - folini == 1000000) {
                 generarDV(folini, folfin);
+                
+            } else {
+                JOptionPane.showMessageDialog(this.rootPane, "Solo puedes crear bases de 1,000,000 de folios");
             }
         }
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jtff_iniKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jtff_iniKeyTyped
@@ -204,37 +208,149 @@ public class Apps extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     private void generarDV(int folini, int folfin) {
-
-        int sumas = 0, resuido, num, p = 0;
-        for (int i = folini; i < folfin; i++) {
-
-            String smu = String.valueOf((i + 1));
+        int sumas = 0;
+        int p = 0;
+        int resta = folfin - folini;
+        int i;
+        for (i = 0; i < 10000; i++) {
+            this.pila.push("00000000" + letrasAl().toUpperCase() + Character.MIN_VALUE);
+        }
+        for (i = folini; i < folfin; i++) {
+            String smu =String.format("%08d",(i+1));
+           // System.out.println(smu);
             int[] asuma = new int[smu.length()];
             int nums = Integer.parseInt(smu);
             for (int j = 0; j < smu.length(); j++) {
-                num = j + 1;
+                int num = j + 1;
                 sumas = Integer.parseInt(smu.substring(j, num));
                 int mult = 0;
                 mult = sumas * num;
                 int cont = 0;
-
                 asuma[j] = mult;
                 int total = 0;
-                //System.out.println(sumas + " * " + num + " = " + mult);
                 for (int k = 0; k < asuma.length; k++) {
-                    total = total + asuma[k];
-                    //System.out.println(total);
+                    total += asuma[k];
                 }
                 if (j == smu.length() - 1) {
-                    //System.out.println("Suma total: " + total + "\nResuido: " + resuido(total) + "\nletra: " + letrasAl().toUpperCase() + "\nfolio: " + smu+"\nDV: "+DV(Integer.parseInt(resuido(total))));
-                    pila.push(smu + letrasAl().toUpperCase() + DV(Integer.parseInt(resuido(total))));
-
+                    this.pila.push(smu + letrasAl().toUpperCase() + DV(Integer.parseInt(resuido(total))));
                 }
-
             }
         }
-        jLabel1_folios.setText("Folios creados: " + pila.size());
-        generartxt(pila, getRuta());
+         this.pila_dos=this.pila;
+        generartxt(pila_dos, new FileBrowser().guardarComo());
+        this.jLabel1_folios.setText("Folios creados: " + this.pila.size());
+        String rute = getRuta();
+        File salida = new File(rute);
+        String archivo = salida.getName();
+        String carpeta = salida.getParent();
+        
+         
+       
+        
+        GenerarArchivos(this.pila, archivo, carpeta);
+    }
+
+    private void GenerarArchivos(Stack<String> pila, String archivo, String carpeta) {
+         
+        if (pila.size() < 70000) {
+            if (!pila.empty()) {
+                int particion = pila.size() / 10;
+                String[][] matriz = new String[particion][10];
+                int f;
+                for (f = 0; f < matriz.length; f++) {
+                    matriz[f][0] = pila.pop();
+                }
+                for (f = 0; f < matriz.length; f++) {
+                    matriz[f][1] = pila.pop();
+                }
+                for (f = 0; f < matriz.length; f++) {
+                    matriz[f][2] = pila.pop();
+                }
+                for (f = 0; f < matriz.length; f++) {
+                    matriz[f][3] = pila.pop();
+                }
+                for (f = 0; f < matriz.length; f++) {
+                    matriz[f][4] = pila.pop();
+                }
+                for (f = 0; f < matriz.length; f++) {
+                    matriz[f][5] = pila.pop();
+                }
+                for (f = 0; f < matriz.length; f++) {
+                    matriz[f][6] = pila.pop();
+                }
+                for (f = 0; f < matriz.length; f++) {
+                    matriz[f][7] = pila.pop();
+                }
+                for (f = 0; f < matriz.length; f++) {
+                    matriz[f][8] = pila.pop();
+                }
+                for (f = 0; f < matriz.length; f++) {
+                    matriz[f][9] = pila.pop();
+                }
+                crearArchivosVarios(pila, matriz, archivo, carpeta);
+            } else {
+                JOptionPane.showMessageDialog(this.rootPane, "Se guardo en: \n" + carpeta, "Saliendo", 1);
+                System.exit(0);
+            }
+        } else {
+            String[][] matriz = new String[10000][10];
+            int f;
+            for (f = 0; f < matriz.length; f++) {
+                matriz[f][0] = pila.pop();
+            }
+            for (f = 0; f < matriz.length; f++) {
+                matriz[f][1] = pila.pop();
+            }
+            for (f = 0; f < matriz.length; f++) {
+                matriz[f][2] = pila.pop();
+            }
+            for (f = 0; f < matriz.length; f++) {
+                matriz[f][3] = pila.pop();
+            }
+            for (f = 0; f < matriz.length; f++) {
+                matriz[f][4] = pila.pop();
+            }
+            for (f = 0; f < matriz.length; f++) {
+                matriz[f][5] = pila.pop();
+            }
+            for (f = 0; f < matriz.length; f++) {
+                matriz[f][6] = pila.pop();
+            }
+            for (f = 0; f < matriz.length; f++) {
+                matriz[f][7] = pila.pop();
+            }
+            for (f = 0; f < matriz.length; f++) {
+                matriz[f][8] = pila.pop();
+            }
+            for (f = 0; f < matriz.length; f++) {
+                matriz[f][9] = pila.pop();
+            }
+            crearArchivosVarios(pila, matriz, archivo, carpeta);
+        }
+    }
+
+    private void crearArchivosVarios(Stack<String> pila, String[][] matriz, String archivo, String carpeta) {
+        this.contador++;
+        FileWriter fichero = null;
+        PrintWriter pw = null;
+        try {
+            if (!archivo.contains(".txt")) {
+                archivo = archivo.concat(".txt");
+            }
+            fichero = new FileWriter(carpeta + "/" + this.contador + " particion-" + archivo);
+            pw = new PrintWriter(fichero);
+            for (int f = 0; f < matriz.length; f++) {
+                for (int c = 0; c < (matriz[f]).length; c++) {
+                    pw.print(matriz[f][c] + "\t");
+                }
+                pw.println();
+            }
+            pw.close();
+            fichero.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        GenerarArchivos(pila, archivo, carpeta);
     }
 
     private String resuido(int cont) {
@@ -269,7 +385,7 @@ public class Apps extends javax.swing.JFrame {
     }
 
     private void generartxt(Stack<String> pila, String ruta) {
-        if (ruta == null || ruta =="" ) {
+        if (ruta == null || ruta == "") {
             JOptionPane.showMessageDialog(rootPane, "Debes seleccionar una ruta", "Error", JOptionPane.ERROR_MESSAGE);
         } else {
             FileWriter fichero = null;
