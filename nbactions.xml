@@ -12,7 +12,7 @@
             <properties>
                 <exec.args>-classpath %classpath com.tepach.fmc.Apps</exec.args>
                 <exec.executable>java</exec.executable>
-                <exec.workingdir>C:\Users\inspector\Documents\NetBeansProjects\FMC_Folios</exec.workingdir>
+                <exec.workingdir>D:\Documentos\NetBeansProjects\FMC_Folios</exec.workingdir>
             </properties>
         </action>
         <action>
