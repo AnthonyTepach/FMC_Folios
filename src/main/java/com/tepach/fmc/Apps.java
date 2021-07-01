@@ -214,6 +214,7 @@ public class Apps extends javax.swing.JFrame {
         int i;
         for (i = 0; i < 10000; i++) {
             this.pila.push("00000000" + letrasAl().toUpperCase() + Character.MIN_VALUE);
+            //this.hola.add("00000000" + letrasAl().toUpperCase() + Character.MIN_VALUE);
         }
         for (i = folini; i < folfin; i++) {
             String smu =String.format("%08d",(i+1));
@@ -233,10 +234,11 @@ public class Apps extends javax.swing.JFrame {
                 }
                 if (j == smu.length() - 1) {
                     this.pila.push(smu + letrasAl().toUpperCase() + DV(Integer.parseInt(resuido(total))));
+                    this.hola.add(smu + letrasAl().toUpperCase() + DV(Integer.parseInt(resuido(total))));
                 }
             }
         }
-         this.pila_dos=this.pila;
+        this.pila_dos.addAll(this.pila);
         generartxt(pila_dos, new FileBrowser().guardarComo());
         this.jLabel1_folios.setText("Folios creados: " + this.pila.size());
         String rute = getRuta();
@@ -247,7 +249,8 @@ public class Apps extends javax.swing.JFrame {
          
        
         
-        GenerarArchivos(this.pila, archivo, carpeta);
+        //GenerarArchivos(this.pila, archivo, carpeta);
+        GenerarArchivos(hola, archivo, carpeta);
     }
 
     private void GenerarArchivos(Stack<String> pila, String archivo, String carpeta) {
@@ -258,35 +261,11 @@ public class Apps extends javax.swing.JFrame {
                 String[][] matriz = new String[particion][10];
                 int f;
                 for (f = 0; f < matriz.length; f++) {
-                    matriz[f][0] = pila.pop();
+                    for (int i = 0; i < 10; i++) {
+                         matriz[f][i] = pila.pop();
+                    }
                 }
-                for (f = 0; f < matriz.length; f++) {
-                    matriz[f][1] = pila.pop();
-                }
-                for (f = 0; f < matriz.length; f++) {
-                    matriz[f][2] = pila.pop();
-                }
-                for (f = 0; f < matriz.length; f++) {
-                    matriz[f][3] = pila.pop();
-                }
-                for (f = 0; f < matriz.length; f++) {
-                    matriz[f][4] = pila.pop();
-                }
-                for (f = 0; f < matriz.length; f++) {
-                    matriz[f][5] = pila.pop();
-                }
-                for (f = 0; f < matriz.length; f++) {
-                    matriz[f][6] = pila.pop();
-                }
-                for (f = 0; f < matriz.length; f++) {
-                    matriz[f][7] = pila.pop();
-                }
-                for (f = 0; f < matriz.length; f++) {
-                    matriz[f][8] = pila.pop();
-                }
-                for (f = 0; f < matriz.length; f++) {
-                    matriz[f][9] = pila.pop();
-                }
+               
                 crearArchivosVarios(pila, matriz, archivo, carpeta);
             } else {
                 JOptionPane.showMessageDialog(this.rootPane, "Se guardo en: \n" + carpeta, "Saliendo", 1);
@@ -296,39 +275,42 @@ public class Apps extends javax.swing.JFrame {
             String[][] matriz = new String[10000][10];
             int f;
             for (f = 0; f < matriz.length; f++) {
-                matriz[f][0] = pila.pop();
-            }
-            for (f = 0; f < matriz.length; f++) {
-                matriz[f][1] = pila.pop();
-            }
-            for (f = 0; f < matriz.length; f++) {
-                matriz[f][2] = pila.pop();
-            }
-            for (f = 0; f < matriz.length; f++) {
-                matriz[f][3] = pila.pop();
-            }
-            for (f = 0; f < matriz.length; f++) {
-                matriz[f][4] = pila.pop();
-            }
-            for (f = 0; f < matriz.length; f++) {
-                matriz[f][5] = pila.pop();
-            }
-            for (f = 0; f < matriz.length; f++) {
-                matriz[f][6] = pila.pop();
-            }
-            for (f = 0; f < matriz.length; f++) {
-                matriz[f][7] = pila.pop();
-            }
-            for (f = 0; f < matriz.length; f++) {
-                matriz[f][8] = pila.pop();
-            }
-            for (f = 0; f < matriz.length; f++) {
-                matriz[f][9] = pila.pop();
-            }
+                    for (int i = 0; i < 10; i++) {
+                         matriz[f][i] = pila.pop();
+                    }
+                }
             crearArchivosVarios(pila, matriz, archivo, carpeta);
         }
     }
-
+ private void GenerarArchivos(ArrayList<String> lista, String archivo, String carpeta) {
+         
+        if (lista.size() < 70000) {
+            if (!lista.isEmpty()) {
+                int particion = lista.size() / 10;
+                String[][] matriz = new String[particion][10];
+                int f;
+                for (f = 0; f < matriz.length; f++) {
+                    for (int i = 0; i < 10; i++) {
+                         matriz[f][i] = lista.get(f);
+                    }
+                }
+               
+                crearArchivosVarios(lista, matriz, archivo, carpeta);
+            } else {
+                JOptionPane.showMessageDialog(this.rootPane, "Se guardo en: \n" + carpeta, "Saliendo", 1);
+                System.exit(0);
+            }
+        } else {
+            String[][] matriz = new String[10000][10];
+            int f;
+            for (f = 0; f < matriz.length; f++) {
+                    for (int i = 0; i < 10; i++) {
+                         matriz[f][i] =lista.get(f);
+                    }
+                }
+            crearArchivosVarios(lista, matriz, archivo, carpeta);
+        }
+    }
     private void crearArchivosVarios(Stack<String> pila, String[][] matriz, String archivo, String carpeta) {
         this.contador++;
         FileWriter fichero = null;
@@ -351,6 +333,30 @@ public class Apps extends javax.swing.JFrame {
             ex.printStackTrace();
         }
         GenerarArchivos(pila, archivo, carpeta);
+    }
+    
+    private void crearArchivosVarios(ArrayList<String> lista, String[][] matriz, String archivo, String carpeta) {
+        this.contador++;
+        FileWriter fichero = null;
+        PrintWriter pw = null;
+        try {
+            if (!archivo.contains(".txt")) {
+                archivo = archivo.concat(".txt");
+            }
+            fichero = new FileWriter(carpeta + "/" + this.contador + " particion-" + archivo);
+            pw = new PrintWriter(fichero);
+            for (int f = 0; f < matriz.length; f++) {
+                for (int c = 0; c < (matriz[f]).length; c++) {
+                    pw.print(matriz[f][c] + "\t");
+                }
+                pw.println();
+            }
+            pw.close();
+            fichero.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        GenerarArchivos(lista, archivo, carpeta);
     }
 
     private String resuido(int cont) {
@@ -397,7 +403,7 @@ public class Apps extends javax.swing.JFrame {
                 fichero = new FileWriter(ruta);
                 pw = new PrintWriter(fichero);
                 while (!pila.empty()) {
-                    pw.println(pila.pop());
+                    pw.println(pila.pop().substring(8,10));
                 }
                 pw.close();
                 fichero.close();
